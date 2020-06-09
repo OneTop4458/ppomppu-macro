@@ -24,6 +24,8 @@
 1. python-3.8.0.exe 설치 시 설치시 하단 Add Python 3.8 to PATH 체크
 2. Chrome 버전과 Chrome Driver 버전 상이시 에러발생
 3. otp 로그인 설정시 매크로 사용 불가
+4. config_comment.txt 저장시 BOM 없는 UTF-8로 저장해야함
+> config_comment.txt는 매크로가 입력할 댓글을 지정할 수 있음
 
 ## 기여하기
 버그 등이 발생하면 이슈로 등록해 주시거나, 문제가 되는 부분을 수정하신 후 PR해 주시면 감사하겠습니다.
