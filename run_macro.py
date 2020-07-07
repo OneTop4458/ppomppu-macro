@@ -5,6 +5,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.keys import Keys
+from urllib import parse
 import os
 import json
 import base64
@@ -114,6 +115,23 @@ def writeComment(driver,i):
             print(li[i].find_element_by_class_name('conts').text)
             li[i].click()
             i += 1
+            # 질문/요청 게시판 skip 코드 시작
+            url = parse.urlparse(driver.current_url)
+            url.geturl()
+            query = dict(parse.parse_qs(url.query))
+            
+            if(query['id'] == ['help']): #추출한 query에 id가 없으면 exception 발생함
+                print("------------------------------------------------")
+                print("LOG : 질문/요청 게시판에는 댓글을 작성하지 않습니다!")
+                print("------------------------------------------------")
+                i += 1
+                time.sleep(2)
+                driver.get("https://www.ppomppu.co.kr/myinfo/coupon/ppom_coupon_charge.php")
+                if(i >= liSize):
+                    print("LOG : 총 %d 건의 댓글을 모두 작성완료 했습니다 [실패건이 있다면 포함하여 카운트됨]"%i)
+                    break
+                return True
+            # 질문/요청 게시판 skip 코드 끝
             editorFrame = driver.find_element_by_css_selector('.cheditor-editarea-wrapper iframe')
             driver.switch_to_frame(editorFrame)
             editor = driver.find_element_by_xpath("/html/body")
