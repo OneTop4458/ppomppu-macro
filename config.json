@@ -1,4 +1,6 @@
 {
-	"userId": "Base64 로 인코딩한 아이디",
-	"userPw": "Base64 로 인코딩한 비밀번호"
+	"userId"	: "Base64 로 인코딩한 아이디",
+	"userPw"	: "Base64 로 인코딩한 비밀번호",
+	"Headless"	: "False",
+	"AutoExit"	: "False"
 }
