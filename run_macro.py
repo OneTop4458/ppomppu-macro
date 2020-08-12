@@ -13,13 +13,22 @@ import time
 
 def main():
     try:
-        driver = getDriver() # 크롬 드라이버 로드
-        driver.get('https://www.ppomppu.co.kr/zboard/login.php')
-        config = getConfigLogin() # 설정 파일 가져오기
+        config = getConfig() # 설정 파일 가져오기
+        AutoExit = config['AutoExit'] # 자동 종료 설정 여부 가져오기
+        Headless = config['Headless'] # Headless 설정 여부 가져오기
+        if(Headless == "True"): # Headless 모드 동작
+            options = webdriver.ChromeOptions()
+            options.add_argument('headless')
+            options.add_argument('window-size=1920x1080')
+            options.add_argument("disable-gpu")
+        else:
+            options = None
+        driver = getDriver(options) # 크롬 드라이버 로드
         id = base64.b64decode(config['userId']) # id, pw의 base64 decode
         id = id.decode("UTF-8")
         pw = base64.b64decode(config['userPw'])
         pw = pw.decode("UTF-8")
+        driver.get('https://www.ppomppu.co.kr/zboard/login.php')
         loginPpomppu(driver, id, pw) # 뽐뿌 로그인
         time.sleep(1)
         driver.get("https://www.ppomppu.co.kr/myinfo/coupon/ppom_coupon_charge.php") # 이벤트 목록으로 이동
@@ -28,21 +37,22 @@ def main():
         checkEvent(driver) # 이벤트 목록 찾기
         getConfigComment() # 댓글 목록 가져오기
         writeComment(driver,0) # 댓글 작성
+        driver.quit()
     except Exception as e:
         print('LOG: Error [%s]' % (str(e)))
     else:
         print("LOG: Main Process in done.")
     finally:
-        os.system("Pause")
-        driver.quit()
+        if(AutoExit == "False"): # 자동 종료가 아니라면
+            os.system("Pause")
 
-def getDriver():
-    driver = webdriver.Chrome("chromedriver.exe")
+def getDriver(options=None):
+    driver = webdriver.Chrome("chromedriver.exe", options=options)
     driver.implicitly_wait(3)
     print("LOG: Chrome 드라이버 로딩 성공")
     return driver
 
-def getConfigLogin():
+def getConfig():
     try:
         with open('config.json') as json_file:
             json_data = json.load(json_file)
@@ -124,6 +134,7 @@ def writeComment(driver,i):
                 print("------------------------------------------------")
                 print("LOG : 질문/요청 게시판에는 댓글을 작성하지 않습니다!")
                 print("------------------------------------------------")
+                i += 1
                 time.sleep(2)
                 driver.get("https://www.ppomppu.co.kr/myinfo/coupon/ppom_coupon_charge.php")
                 if(i >= liSize):
