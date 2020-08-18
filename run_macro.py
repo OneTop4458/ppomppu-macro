@@ -134,7 +134,6 @@ def writeComment(driver,i):
                 print("------------------------------------------------")
                 print("LOG : 질문/요청 게시판에는 댓글을 작성하지 않습니다!")
                 print("------------------------------------------------")
-                i += 1
                 time.sleep(2)
                 driver.get("https://www.ppomppu.co.kr/myinfo/coupon/ppom_coupon_charge.php")
                 if(i >= liSize):
